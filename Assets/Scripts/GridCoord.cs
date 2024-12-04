@@ -14,6 +14,7 @@ public class GridCoord
     public static GridCoord Right = new GridCoord(1, 0);
     
     
+    
     public GridCoord(int x, int y)
     {
         X = x;

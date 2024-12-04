@@ -6,11 +6,9 @@ using UnityEngine.Serialization;
 public class GridObject : MonoBehaviour
 {
     [SerializeField] private Vector2Int objectSize;
-    // use this bool for object rotation
-    private bool isObjectHorizontal = true;
     
-    private GridCoord objectStartPos;
-    private GridCoord objectEndPos;
+    // uses the same values as int in the provided document.
+    private List<int> movableDirections = new List<int>();
     
     // Start is called before the first frame update
     void Start()
@@ -24,8 +22,13 @@ public class GridObject : MonoBehaviour
         
     }
     
-    public void SetObjectRotation(bool isHorizontal)
+    public void AddToMovableDirections(int direction)
     {
-        isObjectHorizontal = isHorizontal;
+        if(direction is >= 0 and <= 3 && !movableDirections.Contains(direction))
+        {
+            
+            movableDirections.Add(direction);
+        }
+        
     }
 }
