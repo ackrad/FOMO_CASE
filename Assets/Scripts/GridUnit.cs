@@ -6,13 +6,16 @@ public class GridUnit
 {
     public GridCoord GridPosition { get; private set; }
     public GridManager GridManager { get; private set; }
-    public bool IsFree { get; private set; } = true;
 
     public GridUnitType GridUnitType { get; private set; } = GridUnitType.Empty;
 
-    public void SetIsFree(bool isFree)
+    public bool IsFreeToMoveThrough()
     {
-        IsFree = isFree;
+        if(GridUnitType == GridUnitType.Empty)
+        {
+            return true;
+        }
+        return false;
     }
     
     public void SetGridUnitType(GridUnitType gridUnitType)
@@ -25,7 +28,6 @@ public class GridUnit
    {
        GridPosition = gridPosition;
        GridManager = gridManager;
-       IsFree = true;
        GridUnitType = gridUnitType;
    }
    

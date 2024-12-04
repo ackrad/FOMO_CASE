@@ -115,6 +115,10 @@ PrefabInstance:
       value: GridObject2x1
       objectReference: {fileID: 0}
     - target: {fileID: 8246471619811954165, guid: 6b1f7e380c329434998d04048b3d3d23, type: 3}
+      propertyPath: objectSize
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8246471619811954165, guid: 6b1f7e380c329434998d04048b3d3d23, type: 3}
       propertyPath: objectSize.x
       value: 1
       objectReference: {fileID: 0}
