@@ -8,8 +8,8 @@ public class GridCoord
     public int Y;
     public Vector3 Position => new Vector3(X, 0, Y);
     
-    public static GridCoord Up = new GridCoord(0, 1);
-    public static GridCoord Down = new GridCoord(0, -1);
+    public static GridCoord Up = new GridCoord(0, -1);
+    public static GridCoord Down = new GridCoord(0, 1);
     public static GridCoord Left = new GridCoord(-1, 0);
     public static GridCoord Right = new GridCoord(1, 0);
     

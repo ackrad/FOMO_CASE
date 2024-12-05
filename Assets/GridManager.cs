@@ -29,7 +29,7 @@ public class GridManager : MonoBehaviour
                 // create bg if its not on the edge
                 
                 var obj = Instantiate(gridBgPrefab);
-                obj.transform.position = new GridCoord(x, y).ToVector3();
+                obj.transform.position = new GridCoord(x, y).ToWorldPos();
             }
         }
         
@@ -38,11 +38,12 @@ public class GridManager : MonoBehaviour
         {
             GridCoord startPosition = new GridCoord(movables.Col, movables.Row);
             List<int> directions = movables.Direction;
-            // assuming that first direction is the direction of the object
-            GridCoord direction = IntToDirection(directions[0]);
+            
+            // objects are always placed from left to right top to bottom.
+            GridCoord direction = directions[0].TurnToDirectionLevelGeneration();
             int length = movables.Length;
-            GridObject gridObject = InstantiateGridObject(startPosition, direction, length);
-            gridObject.transform.position = new Vector3(startPosition.X * cellSize, 0, startPosition.Y * cellSize);
+            GridObject gridObject = InstantiateGridObject(startPosition, length);
+            gridObject.transform.position = startPosition.ToWorldPos();
             grid[startPosition.X, startPosition.Y].SetGridUnitType(GridUnitType.Taken);
             for (int i = 0; i < length; i++)
             {
@@ -51,21 +52,24 @@ public class GridManager : MonoBehaviour
             }
             
             // set grid rotation default is right
-            gridObject.transform.rotation = Quaternion.Euler(0, 90 * (directions[0]-1), 0);
+            gridObject.transform.rotation = Quaternion.Euler(0, 90 * (directions[0]-3), 0);
             
         }
 
 
         foreach (var exitInfo in gridData.ExitInfo)
         {
-            
-            
+            // get grid pos 
+            GridCoord coord = new GridCoord(exitInfo.Col, exitInfo.Row);
+            var exitObj = Instantiate(exitDoorPrefab);
+            exitObj.transform.position = (coord).ToWorldPos() + exitInfo.Direction.TurnToDirection().ToWorldPos()*0.5f;
+            exitObj.transform.rotation = Quaternion.Euler(0, 90 * (exitInfo.Direction), 0);
+
+
         }
         
-        
     }
-    
-    private GridObject InstantiateGridObject(GridCoord gridCoord, GridCoord direction, int length)
+    private GridObject InstantiateGridObject(GridCoord gridCoord,  int length)
     {
         var objToInstantiate = gridObjectsData.GetGridObjectBySize(length);
         if (objToInstantiate == null)
@@ -77,8 +81,6 @@ public class GridManager : MonoBehaviour
         GridObject gridObject = Instantiate(objToInstantiate, transform);
         
         return gridObject;
-        
-        
     }
     
     
@@ -98,22 +100,7 @@ public class GridManager : MonoBehaviour
         return GridUnitType.Empty;
     }
     
-    private GridCoord IntToDirection(int direction)
-    {
-        switch (direction)
-        {
-            case 0:
-                return GridCoord.Up;
-            case 1:
-                return GridCoord.Right;
-            case 2:
-                return GridCoord.Down;
-            case 3:
-                return GridCoord.Left;
-            default:
-                return GridCoord.Up;
-        }
-    }
+
     
     
 }

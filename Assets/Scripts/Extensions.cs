@@ -14,10 +14,47 @@ public static class Extensions
         return new GridCoord(Mathf.RoundToInt(vector3.x), Mathf.RoundToInt(vector3.z));
     }
     
-    public static Vector3 ToVector3(this GridCoord gridCoord)
+    public static Vector3 ToWorldPos(this GridCoord gridCoord)
     {
-        return new Vector3(gridCoord.X, 0, gridCoord.Y);
+        return new Vector3(gridCoord.X, 0, -gridCoord.Y);
     }
-    
+
+
+    public static GridCoord TurnToDirection(this int direction)
+    {
+        switch (direction)
+        {
+            case 0:
+                return GridCoord.Up ;
+            case 1:
+                return GridCoord.Right;
+            case 2:
+                return GridCoord.Down;
+            case 3:
+                return GridCoord.Left;
+            default:
+                return GridCoord.Up;
+        }
+    }
+
+    public static GridCoord TurnToDirectionLevelGeneration(this int direction)
+    {
+        switch (direction)
+        {
+            case 0:
+                return GridCoord.Down ;
+            case 1:
+                return GridCoord.Right;
+            case 2:
+                return GridCoord.Down;
+            case 3:
+                return GridCoord.Right;
+            default:
+                return GridCoord.Up;
+        }
+        
+        
+        
+    }
 
 }
