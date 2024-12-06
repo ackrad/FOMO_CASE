@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Lean.Pool;
 using NaughtyAttributes;
 using Unity.VisualScripting;
 using UnityEditor;
@@ -11,7 +12,6 @@ using UnityEngine;
 public class GridManager : MonoBehaviour
 {
     [SerializeField] private Vector2Int gridSize;
-    [SerializeField] private float cellSize =1f;
     
     private GridUnit[,] grid;
     GridGenerator gridGenerator;
@@ -104,7 +104,8 @@ public class GridManager : MonoBehaviour
         // move the object
         if (doesExit)
         {
-            gridObject.transform.DOMove(endingPoint.ToWorldPos(), 0.2f).SetEase(Ease.OutBounce).OnComplete(()=>Destroy(gridObject.gameObject));
+            gridObject.transform.SetParent(null);
+            gridObject.transform.DOMove(endingPoint.ToWorldPos(), 0.2f).SetEase(Ease.OutBounce).OnComplete(()=>LeanPool.Despawn(gridObject.gameObject));
         }
         else
         {
@@ -134,6 +135,8 @@ public class GridManager : MonoBehaviour
             }
         }
         
+        CheckForWinCondition();
+        
         GameManager.Instance.DecreaseMoveCount();
 
 
@@ -157,7 +160,23 @@ public class GridManager : MonoBehaviour
         return true;
     }
     
-    
+    private void CheckForWinCondition()
+    {
+        bool isWin = true;
+        foreach (var gridUnit in grid)
+        {
+            if (gridUnit.GridUnitType == GridUnitType.Taken)
+            {
+                isWin = false;
+                break;
+            }
+        }
+        
+        if (isWin)
+        {
+            GameManager.Instance.WinGame();
+        }
+    }
     
 }
 

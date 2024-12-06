@@ -19,6 +19,13 @@ public static class Extensions
         return new Vector3(gridCoord.X, 0, -gridCoord.Y);
     }
 
+    
+    public static Vector3 ToVector3(this GridCoord gridCoord)
+    {
+        return new Vector3(gridCoord.X, 0, gridCoord.Y);
+    }
+    
+    
 
     public static GridCoord TurnToDirection(this int direction)
     {

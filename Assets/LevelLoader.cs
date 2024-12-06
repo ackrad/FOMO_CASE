@@ -8,7 +8,6 @@ using UnityEngine;
 public class LevelLoader : MonoBehaviour
 {
     // serialized for quick testing
-    [SerializeField] private TextAsset gridJson;
     private GridManager gridManager;
 
     [SerializeField] private List<TextAsset> gridJsons;
@@ -17,13 +16,16 @@ public class LevelLoader : MonoBehaviour
     private void Start()
     {
         gridManager = GetComponentInChildren<GridManager>();
+        ActionManager.OnNewLevelLoaded += LoadLevel;
         
     }
 
-    [Button]
-    private void LoadLevel()
+    private void LoadLevel(int level)
     {
-        GridData gridData = ReadJson();
+        
+        TextAsset gridJson = gridJsons[(level - 1) % gridJsons.Count];
+        
+        GridData gridData = ReadJson(gridJson);
         if (gridData == null)
         {
             Debug.LogError("GridData is null");
@@ -31,11 +33,10 @@ public class LevelLoader : MonoBehaviour
         }
         gridManager.StartLevel(gridData);
         GameManager.Instance.SetMoveCount(gridData.MoveLimit);
-        ActionManager.OnNewLevelLoaded?.Invoke(1);
     }
     
     
-    private GridData ReadJson()
+    private GridData ReadJson(TextAsset gridJson)
     {
         if (gridJson == null)
         {

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Lean.Pool;
 using UnityEngine;
 
 public class GridGenerator : MonoBehaviour
@@ -8,9 +9,15 @@ public class GridGenerator : MonoBehaviour
     [SerializeField] private GameObject gridBgPrefab;
     [SerializeField] private ExitDoor exitDoorPrefab;
     
+    [SerializeField] private Transform gridBGParent;
+    [SerializeField] private Transform gridObjectsParent;
+    [SerializeField] private Transform exitDoorsParent;
     
    public GridUnit[,] InitializeGrid(GridData gridData)
     {
+        
+        ClearLevel();
+        
         // plus two because exits are inside grid in this code.
         Vector2Int gridSize = new Vector2Int(gridData.ColCount, gridData.RowCount);
         var grid = new GridUnit[gridSize.x, gridSize.y];
@@ -20,7 +27,7 @@ public class GridGenerator : MonoBehaviour
             for (int y = 0; y < gridSize.y; y++)
             {
                 grid[x, y] = new GridUnit(new GridCoord(x, y), GridUnitType.Empty);
-                var obj = Instantiate(gridBgPrefab);
+                var obj = LeanPool.Spawn(gridBgPrefab, gridBGParent, true);
                 obj.transform.position = new GridCoord(x, y).ToWorldPos();
             }
         }
@@ -34,9 +41,8 @@ public class GridGenerator : MonoBehaviour
             // objects are always placed from left to right top to bottom.
             GridCoord direction = directions[0].TurnToDirectionLevelGeneration();
             int length = movables.Length;
-            GridObject gridObject = InstantiateGridObject(startPosition, length);
+            GridObject gridObject = InstantiateGridObject(length);
             gridObject.transform.position = startPosition.ToWorldPos();
-           
             for (int i = 0; i < length; i++)
             {
                 GridCoord currentPosition = startPosition + direction * i;
@@ -45,8 +51,6 @@ public class GridGenerator : MonoBehaviour
             }
             
             // set grid rotation default is right
-            
-            
             gridObject.transform.rotation = Quaternion.Euler(0, Mathf.Abs(90 * (directions[0]-3))%180, 0);
             gridObject.SetMaterial(gridObjectsData.GetMaterialByColorInt(movables.Colors, length), movables.Colors);
             foreach (var directionAsInt in directions)
@@ -62,7 +66,7 @@ public class GridGenerator : MonoBehaviour
         {
             // get grid pos 
             GridCoord coord = new GridCoord(exitInfo.Col, exitInfo.Row);
-            var exitObj = Instantiate(exitDoorPrefab);
+            var exitObj = LeanPool.Spawn(exitDoorPrefab, exitDoorsParent);
             exitObj.transform.position = (coord).ToWorldPos() + exitInfo.Direction.TurnToDirection().ToWorldPos()*0.5f;
             exitObj.transform.rotation = Quaternion.Euler(0, 90 * (exitInfo.Direction), 0);
             
@@ -76,7 +80,7 @@ public class GridGenerator : MonoBehaviour
         return grid;
     }
    
-    private GridObject InstantiateGridObject(GridCoord gridCoord,  int length)
+    private GridObject InstantiateGridObject(  int length)
     {
         var objToInstantiate = gridObjectsData.GetGridObjectBySize(length);
         if (objToInstantiate == null)
@@ -85,9 +89,29 @@ public class GridGenerator : MonoBehaviour
             return null;
         }
         
-        GridObject gridObject = Instantiate(objToInstantiate, transform);
+        GridObject gridObject = LeanPool.Spawn(objToInstantiate, gridObjectsParent);
         
         return gridObject;
     }
 
+    
+    private void ClearLevel()
+    {
+        foreach (Transform child in gridBGParent)
+        {
+            LeanPool.Despawn(child.gameObject);
+        }
+        
+        foreach (Transform child in gridObjectsParent)
+        {
+            LeanPool.Despawn(child.gameObject);
+        }
+        
+        foreach (Transform child in exitDoorsParent)
+        {
+            LeanPool.Despawn(child.gameObject);
+        }
+    }
+    
+    
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -50,5 +51,11 @@ public class GridObject : MonoBehaviour
     public GridCoord ReturnObjectOrientation()
     {
         return movableDirections[0].TurnToDirectionLevelGeneration();
+    }
+    
+    public void ObjectHitFromDirection(GridCoord direction)
+    {
+       transform.DOPunchPosition(direction.ToVector3() * 0.1f, 0.2f).SetEase(Ease.OutQuint);
+        
     }
 }

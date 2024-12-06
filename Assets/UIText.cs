@@ -22,12 +22,15 @@ public class UIText : MonoBehaviour
             case UIUpdateType.MoveCount:
                 prefix = "Moves: ";
                 ActionManager.OnMoveCountUpdated += UpdateText;
+                ActionManager.OnInfiniteMoves += () => levelText.text = "Moves: ∞";
                 break;
         }
     }
 
     private void UpdateText(int value)
     {
+        if(GameManager.Instance.DoesHaveInfinityMoves && uiUpdateType == UIUpdateType.MoveCount) return;
+        
         levelText.text = prefix + value;
         transform.DOPunchScale(Vector3.one * 0.1f, 0.5f);
     }

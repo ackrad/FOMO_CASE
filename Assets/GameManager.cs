@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,17 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     
-    private int _moveCount = 0;
+    private int moveCount = 0;
+    private int currentLevel = 1;
+
+    public bool DoesHaveInfinityMoves
+    {
+        private set;
+        get;
+    } = false;
+    
+    public bool IsGameStarted { get; private set; } = false;
+    
     private void Awake()
     {
         if (Instance == null)
@@ -18,18 +29,64 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    
-    
+
+
+    private IEnumerator Start()
+    {
+        yield return null;
+        LoadNextLevel();
+    }
+
     public void SetMoveCount(int moveCount)
     {
-        _moveCount = moveCount;
-        ActionManager.OnMoveCountUpdated?.Invoke(_moveCount);
+        this.moveCount = moveCount;
+        if (this.moveCount == 0)
+        {
+            DoesHaveInfinityMoves = true;
+            ActionManager.OnInfiniteMoves?.Invoke();
+        }
+        
+        ActionManager.OnMoveCountUpdated?.Invoke(this.moveCount);
     }
     
     public void DecreaseMoveCount()
     {
-        _moveCount--;
-        ActionManager.OnMoveCountUpdated?.Invoke(_moveCount);
+        if(DoesHaveInfinityMoves) return;
+        
+        moveCount--;
+        ActionManager.OnMoveCountUpdated?.Invoke(moveCount);
+        
+        if (moveCount == 0)
+        {
+            LoseGame();
+        }
+    }
+    
+    public void LoadNextLevel()
+    {
+        DoesHaveInfinityMoves = false;
+        currentLevel++;
+        ActionManager.OnNewLevelLoaded?.Invoke(currentLevel);
+        IsGameStarted = true;
+    }
+    
+    public void RestartLevel()
+    {
+        ActionManager.OnNewLevelLoaded?.Invoke(currentLevel);
+    }
+
+    public void WinGame()
+    {
+        if (!IsGameStarted) return;
+        IsGameStarted = false;
+        ActionManager.OnGameWin?.Invoke();
+    }
+    
+    public void LoseGame()
+    {
+        if (!IsGameStarted) return;
+        IsGameStarted = false;
+        ActionManager.OnGameLose?.Invoke();
     }
     
 }
