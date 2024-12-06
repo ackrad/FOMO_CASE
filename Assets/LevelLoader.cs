@@ -30,6 +30,8 @@ public class LevelLoader : MonoBehaviour
             return;
         }
         gridManager.StartLevel(gridData);
+        GameManager.Instance.SetMoveCount(gridData.MoveLimit);
+        ActionManager.OnNewLevelLoaded?.Invoke(1);
     }
     
     

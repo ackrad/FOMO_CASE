@@ -133,6 +133,8 @@ public class GridManager : MonoBehaviour
                 grid[currentGridCoord.X, currentGridCoord.Y].gridObjectOnTop = gridObject;
             }
         }
+        
+        GameManager.Instance.DecreaseMoveCount();
 
 
     }

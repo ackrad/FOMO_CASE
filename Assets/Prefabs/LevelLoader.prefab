@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2811353637720300804}
   - component: {fileID: 4149334211288759211}
+  - component: {fileID: 6475032659215452268}
   m_Layer: 0
   m_Name: LevelLoader
   m_TagString: Untagged
@@ -45,7 +46,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a61864ab4a4b5ea41a1ef7b2471cb0e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridJson: {fileID: 4900000, guid: 7ec3c8b6ed87c884998baca32a651572, type: 3}
+  gridJson: {fileID: 4900000, guid: 6f812cd3a1bf23b469c6d285560c3d35, type: 3}
+  gridJsons: []
+--- !u!114 &6475032659215452268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6277327600755236444}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6588c16cfd0b2d489aac6f2d58300e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5120974379905657940
 PrefabInstance:
   m_ObjectHideFlags: 0

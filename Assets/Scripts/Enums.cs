@@ -8,3 +8,10 @@ public enum GridUnitType
     // this should not be returned but here as a reminder
     OutOfBounds
 }
+
+
+public enum UIUpdateType
+{
+    MoveCount,
+    LevelCount
+}
