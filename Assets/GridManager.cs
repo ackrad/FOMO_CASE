@@ -17,8 +17,7 @@ public class GridManager : MonoBehaviour
     GridGenerator gridGenerator;
     
     // open json in inspector for easy access adn testing
-
-
+    
     private void Start()
     {
         gridGenerator = GetComponent<GridGenerator>();
@@ -32,17 +31,17 @@ public class GridManager : MonoBehaviour
     
     public void ResolvePlayerInput(Vector3 worldStartPos, GridCoord gridCoordChange)
     {
-        GridCoord gridCoord = worldStartPos.ToGridCoord();
+        GridCoord gridStartCoord = worldStartPos.ToGridCoord();
         
         // check if out of bounds
-        if (!IsOnGrid(gridCoord)) return;
+        if (!IsOnGrid(gridStartCoord)) return;
         
-        GridObject gridObject = grid[gridCoord.X, gridCoord.Y].gridObjectOnTop;
+        GridObject gridObject = grid[gridStartCoord.X, gridStartCoord.Y].gridObjectOnTop;
         
         // if there is no object to move
         if(gridObject == null)
         {
-            Debug.Log("No object found at: " + gridCoord.X + " " + gridCoord.Y);
+            Debug.Log("No object found at: " + gridStartCoord.X + " " + gridStartCoord.Y);
             return;
         }
         
@@ -53,13 +52,23 @@ public class GridManager : MonoBehaviour
             return;
         }
         
+        // assume object are placed from left to right top to bottom
+        // if moving direction is right or down check ahead
+        int checkAheadCount = 0;
+        int objectLength = gridObject.GetObjectSize();
+        GridCoord objectDirection = gridObject.ReturnObjectOrientation();
+        if (gridCoordChange == objectDirection)
+        {
+            checkAheadCount = objectLength-1;
+        }
+        
         // move as much as possible
         int i = 0;
         int loopMax = 100;
-        GridCoord endingPoint = gridCoord;
+        GridCoord endingPoint = gridStartCoord;
         while (true)
         {
-           GridCoord newGridCoord = gridCoord + gridCoordChange * (i);
+           GridCoord newGridCoord = gridStartCoord + gridCoordChange * (i);
 
             // check if out of bounds
             if (!IsOnGrid(newGridCoord)) break;
@@ -83,32 +92,46 @@ public class GridManager : MonoBehaviour
             }
         }
         
+        
         // check if ends near exit and if it can exit
         bool doesExit = false;
         if (grid[endingPoint.X, endingPoint.Y].CheckIfCanPlayerExit(gridCoordChange, gridObject.GetColorInt()))
         {
-            endingPoint = endingPoint + gridCoordChange;
+            endingPoint = endingPoint + gridCoordChange*(i + objectLength-1);
             doesExit = true;
-            Destroy(gridObject.gameObject);
         }
         
         // move the object
-        gridObject.transform.DOMove(endingPoint.ToWorldPos(), 0.2f).SetEase(Ease.OutBounce);
+        if (doesExit)
+        {
+            gridObject.transform.DOMove(endingPoint.ToWorldPos(), 0.2f).SetEase(Ease.OutBounce).OnComplete(()=>Destroy(gridObject.gameObject));
+        }
+        else
+        {
+            endingPoint = endingPoint - gridCoordChange*checkAheadCount;
+            gridObject.transform.DOMove(endingPoint.ToWorldPos(), 0.2f).SetEase(Ease.OutBounce);
+        }
         
         // empty starting point with length
-        
-        for (int j = 0; j < i; j++)
+        for (int j = 0; j < objectLength; j++)
         {
-            GridCoord currentGridCoord = gridCoord + gridCoordChange * j;
+            GridCoord currentGridCoord = gridStartCoord + objectDirection * j;
             grid[currentGridCoord.X, currentGridCoord.Y].SetGridUnitType(GridUnitType.Empty);
             grid[currentGridCoord.X, currentGridCoord.Y].gridObjectOnTop = null;
         }
         
+        
+        
+        
         // fill ending point
         if (!doesExit)
         {
-            grid[endingPoint.X, endingPoint.Y].SetGridUnitType(GridUnitType.Taken);
-            grid[endingPoint.X, endingPoint.Y].gridObjectOnTop = gridObject;
+            for (int j = 0; j < objectLength; j++)
+            {
+                GridCoord currentGridCoord = endingPoint + objectDirection * j;
+                grid[currentGridCoord.X, currentGridCoord.Y].SetGridUnitType(GridUnitType.Taken);
+                grid[currentGridCoord.X, currentGridCoord.Y].gridObjectOnTop = gridObject;
+            }
         }
 
 

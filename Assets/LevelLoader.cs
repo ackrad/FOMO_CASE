@@ -11,6 +11,8 @@ public class LevelLoader : MonoBehaviour
     [SerializeField] private TextAsset gridJson;
     private GridManager gridManager;
 
+    [SerializeField] private List<TextAsset> gridJsons;
+    
 
     private void Start()
     {

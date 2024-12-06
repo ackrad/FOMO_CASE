@@ -46,4 +46,9 @@ public class GridObject : MonoBehaviour
     {
         return objectSize;
     }
+    
+    public GridCoord ReturnObjectOrientation()
+    {
+        return movableDirections[0].TurnToDirectionLevelGeneration();
+    }
 }
