@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+
+    [SerializeField] private GridManager gridManager;
+    
     private void Start()
     {
         LeanTouch.OnFingerSwipe += FingerSwiped;
@@ -13,13 +16,51 @@ public class PlayerController : MonoBehaviour
 
     private void FingerSwiped(LeanFinger finger)
     {
-        // Get the object at swipe start location.
+        // Get the position at swipe start location.
+        Vector3 worldStartPos = finger.GetStartWorldPosition(Camera.main.transform.position.y);
         
-        // check the swipe direction
+        Vector3 swipeDirection = finger.SwipeScaledDelta;
         
-        // try and throw the block in the spesified direction
+        // turn swipe into 4 direction
+      
+        GridCoord gridCoordChange = SwipeDeltaToGridCoordChange(swipeDirection);
         
-        // handle collision and exit animations depending on what happened
+        
+        gridManager.ResolvePlayerInput(worldStartPos, gridCoordChange);
+        
+        
+        
+        
+        
+        
+        
+    }
+
+
+    private GridCoord SwipeDeltaToGridCoordChange(Vector3 swipeDelta)
+    {
+        if (Mathf.Abs(swipeDelta.x) > Mathf.Abs(swipeDelta.y))
+        {
+            if(swipeDelta.x > 0)
+            {
+                return GridCoord.Right;
+            }
+            else
+            {
+                return GridCoord.Left;
+            }
+        }
+        else
+        {
+            if(swipeDelta.y > 0)
+            {
+                return GridCoord.Up;
+            }
+            else
+            {
+                return GridCoord.Down;
+            }
+        }
         
         
         

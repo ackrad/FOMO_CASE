@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1853531974508481917}
   - component: {fileID: 8486654929399284332}
+  - component: {fileID: 8466893663060826065}
   m_Layer: 0
   m_Name: GridManager
   m_TagString: Untagged
@@ -46,6 +47,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridSize: {x: 0, y: 0}
   cellSize: 1
+--- !u!114 &8466893663060826065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4635228820009373562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cf5aa6f4eff69e43b4fb045e30d0d58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   gridObjectsData: {fileID: 11400000, guid: ff4074276cfe56548ba5bc5c1eb79c7f, type: 2}
   gridBgPrefab: {fileID: 5252025771871707480, guid: f0b9211c97d037043860f867fcbf5683, type: 3}
   exitDoorPrefab: {fileID: 5920214298224684084, guid: ca864d702ee09ca488367dd70aa823cc, type: 3}

@@ -27,9 +27,7 @@ public class LevelLoader : MonoBehaviour
             Debug.LogError("GridData is null");
             return;
         }
-        
-        
-        gridManager.InitializeGrid(gridData);
+        gridManager.StartLevel(gridData);
     }
     
     

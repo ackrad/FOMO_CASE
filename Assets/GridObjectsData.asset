@@ -15,3 +15,59 @@ MonoBehaviour:
   GridObjects:
   - {fileID: 2096155902750397302, guid: bf25fbdca959af94e848d19464dca897, type: 3}
   - {fileID: 1855081861260084337, guid: abac8a00a879d8a42a16244646ccedbc, type: 3}
+  ColorMaterialMatches:
+  - ColorInt: 0
+    Color: {r: 0, g: 0.05845523, b: 1, a: 1}
+    MaterialMatches:
+    - Material:
+      - {fileID: 2100000, guid: 82d0bb1fc067133409ebda55c2b71a76, type: 2}
+      - {fileID: 2100000, guid: f0d4924f7a0547a41948f2bbaa972b91, type: 2}
+      Length: 1
+    - Material:
+      - {fileID: 2100000, guid: 0abf3170cdb38bb41b401fef56162afa, type: 2}
+      - {fileID: 2100000, guid: 1c0c1b16d71437e40b0afb57d3750c66, type: 2}
+      Length: 2
+  - ColorInt: 1
+    Color: {r: 0, g: 1, b: 0.11911154, a: 1}
+    MaterialMatches:
+    - Material:
+      - {fileID: 2100000, guid: a2cb7674b71e176429fc757d09a05442, type: 2}
+      - {fileID: 2100000, guid: 524a0aa686dd0e24e95280ea8004e20d, type: 2}
+      Length: 1
+    - Material:
+      - {fileID: 2100000, guid: f4c198c23a75a1546a2e82cebe63c9c3, type: 2}
+      - {fileID: 2100000, guid: 2605dbfdd3ce8e44f9a55ac71bf09ab5, type: 2}
+      Length: 2
+  - ColorInt: 2
+    Color: {r: 0.98798466, g: 0, b: 1, a: 1}
+    MaterialMatches:
+    - Material:
+      - {fileID: 2100000, guid: 5cd90231617a86248912d836bc89abe2, type: 2}
+      - {fileID: 2100000, guid: eb39ad5b5ef5d4b4a949ee3d319e44c3, type: 2}
+      Length: 1
+    - Material:
+      - {fileID: 2100000, guid: 0590c56f8ff01fd48a32d297d6329055, type: 2}
+      - {fileID: 2100000, guid: c3071c4c9b5c0004b98d73dea6f215a3, type: 2}
+      Length: 2
+  - ColorInt: 3
+    Color: {r: 1, g: 0, b: 0, a: 1}
+    MaterialMatches:
+    - Material:
+      - {fileID: 2100000, guid: cfc40115031bf014b9cc4412d4bd04b4, type: 2}
+      - {fileID: 2100000, guid: 5f98380da089f67469bd6be3c11bcabc, type: 2}
+      Length: 1
+    - Material:
+      - {fileID: 2100000, guid: 4e708ad9702f3694fbd7d466c257750f, type: 2}
+      - {fileID: 2100000, guid: ee3325ea56b10be4f8ec3a6d25d12f71, type: 2}
+      Length: 2
+  - ColorInt: 4
+    Color: {r: 1, g: 0.5753763, b: 0, a: 1}
+    MaterialMatches:
+    - Material:
+      - {fileID: 2100000, guid: b82c12430ee9bf9449ae246785a14105, type: 2}
+      - {fileID: 2100000, guid: 7ff5350089ccc28449ffb5bce64b4141, type: 2}
+      Length: 1
+    - Material:
+      - {fileID: 2100000, guid: 8026dcdd8e9803a43b85a6ddfa79ea63, type: 2}
+      - {fileID: 2100000, guid: 9474323945c5dee48a4d8091c66d8e3a, type: 2}
+      Length: 2

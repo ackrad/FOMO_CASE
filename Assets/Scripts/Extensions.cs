@@ -11,7 +11,7 @@ public static class Extensions
     
     public static GridCoord ToGridCoord(this Vector3 vector3)
     {
-        return new GridCoord(Mathf.RoundToInt(vector3.x), Mathf.RoundToInt(vector3.z));
+        return new GridCoord(Mathf.RoundToInt(vector3.x), Mathf.RoundToInt(-vector3.z));
     }
     
     public static Vector3 ToWorldPos(this GridCoord gridCoord)
@@ -35,6 +35,28 @@ public static class Extensions
             default:
                 return GridCoord.Up;
         }
+    }
+    
+    
+    public static int TurnToDirection(this GridCoord gridCoord)
+    {
+        if (gridCoord == GridCoord.Up)
+        {
+            return 0;
+        }
+        if (gridCoord == GridCoord.Right)
+        {
+            return 1;
+        }
+        if (gridCoord == GridCoord.Down)
+        {
+            return 2;
+        }
+        if (gridCoord == GridCoord.Left)
+        {
+            return 3;
+        }
+        return 0;
     }
 
     public static GridCoord TurnToDirectionLevelGeneration(this int direction)

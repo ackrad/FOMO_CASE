@@ -5,9 +5,14 @@ using UnityEngine;
 public class GridUnit 
 {
     public GridCoord GridPosition { get; private set; }
-    public GridManager GridManager { get; private set; }
 
+    private List<ExitDoor> attachedExits = new List<ExitDoor>();
+    
+    
     public GridUnitType GridUnitType { get; private set; } = GridUnitType.Empty;
+    
+    private bool isOnEdge = false;
+    public GridObject gridObjectOnTop;
 
     public bool IsFreeToMoveThrough()
     {
@@ -24,11 +29,38 @@ public class GridUnit
     }
     
    //constructor
-   public GridUnit(GridCoord gridPosition, GridManager gridManager, GridUnitType gridUnitType)
+   public GridUnit(GridCoord gridPosition, GridUnitType gridUnitType)
    {
        GridPosition = gridPosition;
-       GridManager = gridManager;
        GridUnitType = gridUnitType;
    }
+
+   public void AddAttachedExit(ExitDoor exitDoor)
+   {
+       attachedExits.Add(exitDoor);
+   }
+   
+    public void SetIsOnEdge(bool value)
+    {
+         isOnEdge = value;
+    }
+    
+    public bool GetIsOnEdge()
+    {
+        return isOnEdge;
+    }
+    
+    public bool CheckIfCanPlayerExit(GridCoord direction,int colorInt)
+    {
+        foreach (var exit in attachedExits)
+        {
+            if (exit.GetDirection() == direction && exit.CheckIfCanPlayerExitColor(colorInt))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
    
 }

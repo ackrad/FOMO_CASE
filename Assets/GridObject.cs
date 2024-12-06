@@ -9,7 +9,9 @@ public class GridObject : MonoBehaviour
     
     // uses the same values as int in the provided document.
     private List<int> movableDirections = new List<int>();
-    
+
+
+    private int colorInt;
    
     
     
@@ -21,6 +23,23 @@ public class GridObject : MonoBehaviour
             movableDirections.Add(direction);
         }
         
+    }
+    
+    
+    public bool CheckIfCanMoveInDirection(int direction)
+    {
+        return movableDirections.Contains(direction);
+    }
+    
+    public void SetMaterial(Material material, int color)
+    {
+        colorInt = color;
+        GetComponentInChildren<MeshRenderer>().material = material;
+    }
+    
+    public int GetColorInt()
+    {
+        return colorInt;
     }
     
     public int GetObjectSize()

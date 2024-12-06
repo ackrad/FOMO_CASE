@@ -5,8 +5,6 @@ public enum GridUnitType
     
     Taken,
     // is outside the grid
-    Exit,
-    Wall,
     // this should not be returned but here as a reminder
     OutOfBounds
 }
