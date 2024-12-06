@@ -105,10 +105,13 @@ public class GridObject : MonoBehaviour,IPoolable
         
     }
 
-    public void InstantiateHitParticleOnEdge(GridCoord direction)
+    public void InstantiateHitParticleOnEdge(GridCoord direction,GridCoord blockedCoord)
     {
         var particle = LeanPool.Spawn(hitParticle, transform.position, Quaternion.identity);
+        
+        particle.transform.position = blockedCoord.ToWorldPos() + direction.ToVector3() * 0.5f;
         particle.transform.forward = direction.ToVector3();
+        
         particle.Play();
         
         

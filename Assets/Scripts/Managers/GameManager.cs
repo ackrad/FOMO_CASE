@@ -31,15 +31,13 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
-
+    
     private IEnumerator Start()
     {
         if (testStartLevel > 0)
         {
             currentLevel = testStartLevel;
         }
-        
         yield return null;
         LoadNextLevel();
     }
@@ -62,7 +60,6 @@ public class GameManager : MonoBehaviour
         
         moveCount--;
         ActionManager.OnMoveCountUpdated?.Invoke(moveCount);
-        
         if (moveCount == 0)
         {
             LoseGame();
@@ -93,7 +90,7 @@ public class GameManager : MonoBehaviour
         ActionManager.OnGameWin?.Invoke();
     }
     
-    public void LoseGame()
+    private void LoseGame()
     {
         if (!IsGameStarted) return;
         IsGameStarted = false;

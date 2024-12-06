@@ -16,8 +16,6 @@ public class GridManager : MonoBehaviour
     private GridUnit[,] grid;
     GridGenerator gridGenerator;
     
-    // open json in inspector for easy access adn testing
-    
     private void Start()
     {
         gridGenerator = GetComponent<GridGenerator>();
@@ -37,21 +35,11 @@ public class GridManager : MonoBehaviour
         if (!IsOnGrid(gridStartCoord)) return;
         
         GridObject gridObject = grid[gridStartCoord.X, gridStartCoord.Y].gridObjectOnTop;
-        
         // if there is no object to move
-        if(gridObject == null)
-        {
-            Debug.Log("No object found at: " + gridStartCoord.X + " " + gridStartCoord.Y);
-            return;
-        }
+        if(gridObject == null) return;
         
         // check if gridobject can move in direction
-        if(!gridObject.CheckIfCanMoveInDirection(gridCoordChange.TurnToDirection()))
-        {
-            Debug.Log("Can't move in that direction");
-            return;
-        }
-        
+        if (!gridObject.CheckIfCanMoveInDirection(gridCoordChange.TurnToDirection())) return;
         
         gridStartCoord = gridObject.transform.position.ToGridCoord();
         // assume object are placed from left to right top to bottom
@@ -65,20 +53,100 @@ public class GridManager : MonoBehaviour
         }
         
         // move as much as possible
+        int movementAmount = TryAndMoveInDirection(gridCoordChange, gridStartCoord, gridObject, out var endingPoint, out var hitGridObject);
+
+        // because  it checks the grid unit its on first == 1
+        if(movementAmount == 1)
+        {
+            gridObject.CantMoveShake();
+            return;
+        }
+        
+        // check if ends near exit and if it can exit
+        bool doesExit = false;
+        if (grid[endingPoint.X, endingPoint.Y].CheckIfCanPlayerExit(gridCoordChange, gridObject.GetColorInt()))
+        {
+            grid[endingPoint.X, endingPoint.Y].OpenDoor(gridCoordChange);
+            endingPoint = endingPoint + gridCoordChange*(movementAmount + objectLength-1);
+            doesExit = true;
+        }
+        
+        // move the object
+        if (doesExit)
+        {
+            // throw the object off the cliff
+            gridObject.transform.SetParent(null);
+            gridObject.DespawningRoutine(endingPoint.ToWorldPos(),gridCoordChange);
+        }
+        else
+        {
+            // move to the end position and play effects
+            endingPoint = MoveToPositionAndPlayEffects(gridCoordChange, gridObject, endingPoint, checkAheadCount, hitGridObject);
+        }
+        
+        // empty starting point with length
+        for (int j = 0; j < objectLength; j++)
+        {
+            TurnGridEmpty(gridStartCoord, objectDirection, j);
+        }
+        
+        // fill ending point
+        if (!doesExit)
+        {
+            for (int j = 0; j < objectLength; j++)
+            {
+                AssignGridObjectToGrid(endingPoint, objectDirection, j, gridObject);
+            }
+        }
+        CheckForWinCondition();
+        GameManager.Instance.DecreaseMoveCount();
+    }
+
+    private void AssignGridObjectToGrid(GridCoord endingPoint, GridCoord objectDirection, int j, GridObject gridObject)
+    {
+        GridCoord currentGridCoord = endingPoint + objectDirection * j;
+        grid[currentGridCoord.X, currentGridCoord.Y].SetGridUnitType(GridUnitType.Taken);
+        grid[currentGridCoord.X, currentGridCoord.Y].gridObjectOnTop = gridObject;
+    }
+
+    private void TurnGridEmpty(GridCoord gridStartCoord, GridCoord objectDirection, int j)
+    {
+        GridCoord currentGridCoord = gridStartCoord + objectDirection * j;
+        grid[currentGridCoord.X, currentGridCoord.Y].SetGridUnitType(GridUnitType.Empty);
+        grid[currentGridCoord.X, currentGridCoord.Y].gridObjectOnTop = null;
+    }
+
+    private static GridCoord MoveToPositionAndPlayEffects(GridCoord gridCoordChange, GridObject gridObject,
+        GridCoord endingPoint, int checkAheadCount, GridObject hitGridObject)
+    {
+        gridObject.InstantiateHitParticleOnEdge(gridCoordChange, endingPoint);
+        endingPoint -= gridCoordChange*checkAheadCount;
+        gridObject.transform.DOMove(endingPoint.ToWorldPos(), 0.4f).SetEase(Ease.OutBounce);
+        if(hitGridObject != null)
+        {
+            hitGridObject.ObjectHitFromDirection(gridCoordChange);
+        }
+
+        return endingPoint;
+    }
+
+    private int TryAndMoveInDirection(GridCoord gridCoordChange, GridCoord gridStartCoord, GridObject gridObject,
+        out GridCoord endingPoint, out GridObject hitGridObject)
+    {
         int i = 0;
         int loopMax = 100;
-        GridCoord endingPoint = gridStartCoord;
-        GridObject hitGridObject = null;
+        endingPoint = gridStartCoord;
+        hitGridObject = null;
         while (true)
         {
-           GridCoord newGridCoord = gridStartCoord + gridCoordChange * (i);
+            GridCoord newGridCoord = gridStartCoord + gridCoordChange * (i);
 
             // check if out of bounds
             if (!IsOnGrid(newGridCoord)) break;
             
             // check if the space is empty
             if (grid[newGridCoord.X, newGridCoord.Y].GridUnitType == GridUnitType.Taken &&
-              grid[newGridCoord.X, newGridCoord.Y].gridObjectOnTop != gridObject)
+                grid[newGridCoord.X, newGridCoord.Y].gridObjectOnTop != gridObject)
             {
                 hitGridObject = grid[newGridCoord.X, newGridCoord.Y].gridObjectOnTop;
                 break;
@@ -95,69 +163,11 @@ public class GridManager : MonoBehaviour
                 break;
             }
         }
-        
-        if(endingPoint == gridStartCoord)
-        {
-            gridObject.CantMoveShake();
-            return;
-        }
-        
-        
-        // check if ends near exit and if it can exit
-        bool doesExit = false;
-        if (grid[endingPoint.X, endingPoint.Y].CheckIfCanPlayerExit(gridCoordChange, gridObject.GetColorInt()))
-        {
-            grid[endingPoint.X, endingPoint.Y].OpenDoor(gridCoordChange);
-            endingPoint = endingPoint + gridCoordChange*(i + objectLength-1);
-            doesExit = true;
-        }
-        
-        // move the object
-        if (doesExit)
-        {
-            gridObject.transform.SetParent(null);
-            gridObject.DespawningRoutine(endingPoint.ToWorldPos(),gridCoordChange);
-        }
-        else
-        {
-            endingPoint = endingPoint - gridCoordChange*checkAheadCount;
-            gridObject.transform.DOMove(endingPoint.ToWorldPos(), 0.4f).SetEase(Ease.OutBounce);
-            if(hitGridObject != null)
-            {
-                hitGridObject.ObjectHitFromDirection(gridCoordChange);
-            }
-            gridObject.InstantiateHitParticleOnEdge(gridCoordChange);
-        }
-        
-        // empty starting point with length
-        for (int j = 0; j < objectLength; j++)
-        {
-            
-            GridCoord currentGridCoord = gridStartCoord + objectDirection * j;
-            Debug.Log("Emptying: " + currentGridCoord.X + " " + currentGridCoord.Y);
-            grid[currentGridCoord.X, currentGridCoord.Y].SetGridUnitType(GridUnitType.Empty);
-            grid[currentGridCoord.X, currentGridCoord.Y].gridObjectOnTop = null;
-        }
-        
-        // fill ending point
-        if (!doesExit)
-        {
-            for (int j = 0; j < objectLength; j++)
-            {
-                GridCoord currentGridCoord = endingPoint + objectDirection * j;
-                grid[currentGridCoord.X, currentGridCoord.Y].SetGridUnitType(GridUnitType.Taken);
-                grid[currentGridCoord.X, currentGridCoord.Y].gridObjectOnTop = gridObject;
-            }
-        }
-        
-        CheckForWinCondition();
-        
-        GameManager.Instance.DecreaseMoveCount();
 
-
+        return i;
     }
-    
-    
+
+
     private bool IsOnGrid(GridCoord gridCoord)
     {
         if (gridCoord.X < 0 || gridCoord.X >= gridSize.x || gridCoord.Y < 0 || gridCoord.Y >= gridSize.y)

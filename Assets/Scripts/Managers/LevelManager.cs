@@ -10,6 +10,7 @@ public class LevelManager : MonoBehaviour
     // serialized for quick testing
     private GridManager gridManager;
 
+    // Can read from resources but good enough for now
     [SerializeField] private List<TextAsset> gridJsons;
     
     private void Start()
@@ -27,7 +28,7 @@ public class LevelManager : MonoBehaviour
             Debug.LogError("GridData is null");
             return;
         }
-        // set camera position
+        // set camera position magic numbers babbbby
         Camera.main.transform.position = new Vector3((gridData.ColCount-1)*0.5f ,(gridData.ColCount*gridData.RowCount)/12 + (11/3) , -(gridData.RowCount / 2f));
         gridManager.StartLevel(gridData);
         GameManager.Instance.SetMoveCount(gridData.MoveLimit);

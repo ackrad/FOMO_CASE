@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectSize: 0
+  hitParticle: {fileID: 934057995733567297, guid: 556d0bd0d4bad074f80c37e743ba9816, type: 3}
 --- !u!54 &7157354937472772371
 Rigidbody:
   m_ObjectHideFlags: 0
