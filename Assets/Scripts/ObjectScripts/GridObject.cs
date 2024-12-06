@@ -96,7 +96,6 @@ public class GridObject : MonoBehaviour,IPoolable
         movableDirections.Clear();
         transform.rotation = Quaternion.identity;
         transform.localScale = Vector3.one;
-        rb.velocity = Vector3.zero;
         rb.isKinematic = true;
     }
     
