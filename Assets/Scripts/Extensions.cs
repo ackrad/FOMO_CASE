@@ -22,7 +22,7 @@ public static class Extensions
     
     public static Vector3 ToVector3(this GridCoord gridCoord)
     {
-        return new Vector3(gridCoord.X, 0, gridCoord.Y);
+        return new Vector3(gridCoord.X, 0, -gridCoord.Y);
     }
     
     

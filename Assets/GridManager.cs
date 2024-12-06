@@ -52,6 +52,8 @@ public class GridManager : MonoBehaviour
             return;
         }
         
+        
+        gridStartCoord = gridObject.transform.position.ToGridCoord();
         // assume object are placed from left to right top to bottom
         // if moving direction is right or down check ahead
         int checkAheadCount = 0;
@@ -66,6 +68,7 @@ public class GridManager : MonoBehaviour
         int i = 0;
         int loopMax = 100;
         GridCoord endingPoint = gridStartCoord;
+        GridObject hitGridObject = null;
         while (true)
         {
            GridCoord newGridCoord = gridStartCoord + gridCoordChange * (i);
@@ -77,6 +80,7 @@ public class GridManager : MonoBehaviour
             if (grid[newGridCoord.X, newGridCoord.Y].GridUnitType == GridUnitType.Taken &&
               grid[newGridCoord.X, newGridCoord.Y].gridObjectOnTop != gridObject)
             {
+                hitGridObject = grid[newGridCoord.X, newGridCoord.Y].gridObjectOnTop;
                 break;
             }
             
@@ -92,6 +96,12 @@ public class GridManager : MonoBehaviour
             }
         }
         
+        if(endingPoint == gridStartCoord)
+        {
+            gridObject.CantMoveShake();
+            return;
+        }
+        
         
         // check if ends near exit and if it can exit
         bool doesExit = false;
@@ -105,24 +115,27 @@ public class GridManager : MonoBehaviour
         if (doesExit)
         {
             gridObject.transform.SetParent(null);
-            gridObject.transform.DOMove(endingPoint.ToWorldPos(), 0.2f).SetEase(Ease.OutBounce).OnComplete(()=>LeanPool.Despawn(gridObject.gameObject));
+            gridObject.DespawningRoutine(endingPoint.ToWorldPos(),gridCoordChange);
         }
         else
         {
             endingPoint = endingPoint - gridCoordChange*checkAheadCount;
             gridObject.transform.DOMove(endingPoint.ToWorldPos(), 0.2f).SetEase(Ease.OutBounce);
+            if(hitGridObject != null)
+            {
+                hitGridObject.ObjectHitFromDirection(gridCoordChange);
+            }
         }
         
         // empty starting point with length
         for (int j = 0; j < objectLength; j++)
         {
+            
             GridCoord currentGridCoord = gridStartCoord + objectDirection * j;
+            Debug.Log("Emptying: " + currentGridCoord.X + " " + currentGridCoord.Y);
             grid[currentGridCoord.X, currentGridCoord.Y].SetGridUnitType(GridUnitType.Empty);
             grid[currentGridCoord.X, currentGridCoord.Y].gridObjectOnTop = null;
         }
-        
-        
-        
         
         // fill ending point
         if (!doesExit)
@@ -142,14 +155,6 @@ public class GridManager : MonoBehaviour
 
     }
     
-    private GridUnitType GetGridUnitTypeByCoord(GridCoord gridCoord)
-    {
-        if (gridCoord.X < 0 || gridCoord.X >= gridSize.x || gridCoord.Y < 0 || gridCoord.Y >= gridSize.y)
-        {
-            return GridUnitType.OutOfBounds;
-        }
-        return grid[gridCoord.X, gridCoord.Y].GridUnitType;
-    }
     
     private bool IsOnGrid(GridCoord gridCoord)
     {

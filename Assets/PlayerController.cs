@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
 
     private void FingerSwiped(LeanFinger finger)
     {
+        if (!GameManager.Instance.IsGameStarted) return;
+        
         // Get the position at swipe start location.
         Vector3 worldStartPos = finger.GetStartWorldPosition(Camera.main.transform.position.y);
         

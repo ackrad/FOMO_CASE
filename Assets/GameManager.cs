@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
     
     public bool IsGameStarted { get; private set; } = false;
     
+    [SerializeField] private int testStartLevel = 0;
+    
     private void Awake()
     {
         if (Instance == null)
@@ -33,6 +35,11 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator Start()
     {
+        if (testStartLevel > 0)
+        {
+            currentLevel = testStartLevel;
+        }
+        
         yield return null;
         LoadNextLevel();
     }
@@ -45,7 +52,7 @@ public class GameManager : MonoBehaviour
             DoesHaveInfinityMoves = true;
             ActionManager.OnInfiniteMoves?.Invoke();
         }
-        
+        IsGameStarted = true;
         ActionManager.OnMoveCountUpdated?.Invoke(this.moveCount);
     }
     
@@ -67,7 +74,6 @@ public class GameManager : MonoBehaviour
         DoesHaveInfinityMoves = false;
         currentLevel++;
         ActionManager.OnNewLevelLoaded?.Invoke(currentLevel);
-        IsGameStarted = true;
     }
     
     
@@ -77,7 +83,6 @@ public class GameManager : MonoBehaviour
     {
         DoesHaveInfinityMoves = false;
         ActionManager.OnNewLevelLoaded?.Invoke(currentLevel);
-        IsGameStarted = true;
 
     }
 
