@@ -73,7 +73,7 @@ public class GridObject : MonoBehaviour,IPoolable
 
     public void DespawningRoutine(Vector3 posToMove, GridCoord direction)
     {
-        transform.DOMove(posToMove, 0.2f).SetEase(Ease.OutSine).OnComplete(() =>
+        transform.DOMove(posToMove, 0.4f).SetEase(Ease.OutSine).OnComplete(() =>
         {
             DespawningRoutineContinue(direction);
         });

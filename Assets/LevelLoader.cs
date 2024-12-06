@@ -30,6 +30,8 @@ public class LevelLoader : MonoBehaviour
             Debug.LogError("GridData is null");
             return;
         }
+        // set camera position
+        Camera.main.transform.position = new Vector3((gridData.ColCount-1)*0.5f ,(gridData.ColCount*gridData.RowCount)/12 + (11/3) , -(gridData.RowCount / 2f));
         gridManager.StartLevel(gridData);
         GameManager.Instance.SetMoveCount(gridData.MoveLimit);
     }

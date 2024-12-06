@@ -62,5 +62,16 @@ public class GridUnit
 
         return false;
     }
+    
+    public void OpenDoor(GridCoord direction)
+    {
+        foreach (var exit in attachedExits)
+        {
+            if (exit.GetDirection() == direction)
+            {
+                exit.OpenDoor();
+            }
+        }
+    }
    
 }

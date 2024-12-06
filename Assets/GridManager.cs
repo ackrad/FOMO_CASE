@@ -107,6 +107,7 @@ public class GridManager : MonoBehaviour
         bool doesExit = false;
         if (grid[endingPoint.X, endingPoint.Y].CheckIfCanPlayerExit(gridCoordChange, gridObject.GetColorInt()))
         {
+            grid[endingPoint.X, endingPoint.Y].OpenDoor(gridCoordChange);
             endingPoint = endingPoint + gridCoordChange*(i + objectLength-1);
             doesExit = true;
         }
@@ -120,7 +121,7 @@ public class GridManager : MonoBehaviour
         else
         {
             endingPoint = endingPoint - gridCoordChange*checkAheadCount;
-            gridObject.transform.DOMove(endingPoint.ToWorldPos(), 0.2f).SetEase(Ease.OutBounce);
+            gridObject.transform.DOMove(endingPoint.ToWorldPos(), 0.4f).SetEase(Ease.OutBounce);
             if(hitGridObject != null)
             {
                 hitGridObject.ObjectHitFromDirection(gridCoordChange);
