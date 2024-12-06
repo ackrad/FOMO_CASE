@@ -126,6 +126,7 @@ public class GridManager : MonoBehaviour
             {
                 hitGridObject.ObjectHitFromDirection(gridCoordChange);
             }
+            gridObject.InstantiateHitParticleOnEdge(gridCoordChange);
         }
         
         // empty starting point with length

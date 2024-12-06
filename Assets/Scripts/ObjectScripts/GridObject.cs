@@ -17,6 +17,8 @@ public class GridObject : MonoBehaviour,IPoolable
 
     private int colorInt;
 
+    [SerializeField] private ParticleSystem hitParticle;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -27,7 +29,6 @@ public class GridObject : MonoBehaviour,IPoolable
     {
         if(direction is >= 0 and <= 3 && !movableDirections.Contains(direction))
         {
-            
             movableDirections.Add(direction);
         }
         
@@ -101,6 +102,15 @@ public class GridObject : MonoBehaviour,IPoolable
     
     public void OnSpawn()
     {
+        
+    }
+
+    public void InstantiateHitParticleOnEdge(GridCoord direction)
+    {
+        var particle = LeanPool.Spawn(hitParticle, transform.position, Quaternion.identity);
+        particle.transform.forward = direction.ToVector3();
+        particle.Play();
+        
         
     }
 }
