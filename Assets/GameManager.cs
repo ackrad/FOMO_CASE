@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     
     private int moveCount = 0;
-    private int currentLevel = 1;
+    private int currentLevel = 0;
 
     public bool DoesHaveInfinityMoves
     {
@@ -70,9 +70,15 @@ public class GameManager : MonoBehaviour
         IsGameStarted = true;
     }
     
+    
+    
+    
     public void RestartLevel()
     {
+        DoesHaveInfinityMoves = false;
         ActionManager.OnNewLevelLoaded?.Invoke(currentLevel);
+        IsGameStarted = true;
+
     }
 
     public void WinGame()

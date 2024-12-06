@@ -22,7 +22,6 @@ public class LevelLoader : MonoBehaviour
 
     private void LoadLevel(int level)
     {
-        
         TextAsset gridJson = gridJsons[(level - 1) % gridJsons.Count];
         
         GridData gridData = ReadJson(gridJson);

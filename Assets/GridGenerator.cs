@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Lean.Pool;
+using NaughtyAttributes;
 using UnityEngine;
 
 public class GridGenerator : MonoBehaviour
@@ -95,19 +96,27 @@ public class GridGenerator : MonoBehaviour
     }
 
     
+    [Button]
     private void ClearLevel()
     {
-        foreach (Transform child in gridBGParent)
+        List<Transform> childrenList = new List<Transform>();
+
+        //Adds all children to the list
+        foreach (Transform childTrans in gridBGParent)
+            childrenList.Add(childTrans);
+
+        foreach (Transform childTrans in gridObjectsParent)
         {
-            LeanPool.Despawn(child.gameObject);
+            childrenList.Add(childTrans);
         }
-        
-        foreach (Transform child in gridObjectsParent)
+
+        foreach (Transform childTrans in exitDoorsParent)
         {
-            LeanPool.Despawn(child.gameObject);
+            childrenList.Add(childTrans);
         }
-        
-        foreach (Transform child in exitDoorsParent)
+
+
+        foreach (var child in childrenList)
         {
             LeanPool.Despawn(child.gameObject);
         }
